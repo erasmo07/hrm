@@ -1,0 +1,49 @@
+{
+  "addons": [
+    "heroku-postgresql"
+  ],
+  "buildpacks": [
+    {
+      "url": "https://github.com/heroku/heroku-buildpack-python"
+    }
+  ],
+  "description": "",
+  "env": {
+    "CELERY_BROKER_URL": {
+      "required": true
+    },
+    "DISABLE_COLLECTSTATIC": {
+      "required": true
+    },
+    "DJANGO_ALLOWED_HOSTS": {
+      "required": true
+    },
+    "DJANGO_DEBUG": {
+      "required": true
+    },
+    "DJANGO_SECRET_KEY": {
+      "required": true
+    },
+    "DJANGO_SETTINGS_MODULE": {
+      "required": true
+    },
+    "PYTHONHASHSEED": {
+      "required": true
+    },
+    "WEB_CONCURRENCY": {
+      "required": true
+    }
+  },
+  "formation": {
+    "worker": {
+      "quantity": 1
+    },
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "hrm",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
