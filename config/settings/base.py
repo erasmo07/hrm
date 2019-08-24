@@ -70,6 +70,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "django_celery_beat",
+    "graphene_django",
 ]
 
 LOCAL_APPS = [
@@ -281,6 +282,11 @@ ACCOUNT_ADAPTER = "hrm.users.adapters.AccountAdapter"
 # https://django-allauth.readthedocs.io/en/latest/configuration.html
 SOCIALACCOUNT_ADAPTER = "hrm.users.adapters.SocialAccountAdapter"
 
+
+# Graphene
+GRAPHENE = {
+    'SCHEMA': 'config.schema.schema' # Where your Graphene schema lives
+}
 
 # Your stuff...
 # ------------------------------------------------------------------------------
