@@ -1,22 +1,15 @@
 from config.routers import router
 from django.conf import settings
-from django.urls import include, path, re_path, reverse_lazy
+from django.urls import include, path, re_path
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
-from django.views.generic.base import RedirectView
-from django.views import defaults as default_views
-from graphene_django.views import GraphQLView
 
 
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    path(r'api/v1/', include(router.urls)),
-    path('graphql', csrf_exempt(GraphQLView.as_view(graphiql=True))),
-    path(r'api-auth/', include('rest_framework.urls')),
-    re_path(r'^$', RedirectView.as_view(url=reverse_lazy('api-root'), permanent=False)),
+    path('', TemplateView.as_view(template_name='index.html'))
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
