@@ -8,7 +8,7 @@
 		<span class="kt-badge kt-badge--username kt-badge--unified-success kt-badge--lg kt-badge--rounded kt-badge--bold kt-hidden">S</span>
 	</div>
 	<div class="kt-user-card__name">
-		Sean Stone
+		{{ user.first_name }} {{ user.last_name }}
 	</div>
 	<div class="kt-user-card__badge">
 		<span class="btn btn-label-primary btn-sm btn-bold btn-font-md">23 messages</span>
@@ -85,7 +85,7 @@
 		</div>
 	</a>
 	<div class="kt-notification__custom kt-space-between">
-		<a href="custom/user/login-v2.html" target="_blank" class="btn btn-label btn-label-brand btn-sm btn-bold">Sign Out</a>
+		<a href="{% url 'users:signout' %}" class="btn btn-label btn-label-brand btn-sm btn-bold">Sign Out</a>
 		<a href="custom/user/login-v2.html" target="_blank" class="btn btn-clean btn-sm btn-bold">Upgrade Plan</a>
 	</div>
 </div>

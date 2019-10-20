@@ -1,0 +1,37 @@
+{% extends 'registration/base.html' %}
+
+{% load staticfiles crispy_forms_tags i18n %}
+
+{% block content %}
+    <div class="kt-login__signin">
+        <div class="kt-login__head">
+            <h3 class="kt-login__title">{% trans 'Sign In' %}</h3>
+        </div>
+        <form class="kt-form" method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="row kt-login__extra">
+                <div class="col">
+                    <label class="kt-checkbox">
+                        <input type="checkbox" name="remember">{% trans 'Remember me' %}
+                        <span></span>
+                    </label>
+                </div>
+                <div class="col kt-align-right">
+                    <a href="{% url 'password_reset' %}" id="kt_login_forgot" class="kt-login__link">{% trans 'Forget Password ?' %}</a>
+                </div>
+            </div>
+            <div class="kt-login__actions">
+                <button class="btn btn-brand btn-elevate kt-login__btn-primary">{% trans 'Sign In' %}</button>
+            </div>
+        </form>
+    </div>
+    <div class="kt-login__account">
+        <span class="kt-login__account-msg">
+            {% trans "Don't have an account yet ?" %}
+        </span>
+        &nbsp;&nbsp;
+        <a href="{% url 'users:signup' %}" class="kt-login__account-link">{% trans 'Sign Up!' %}</a>
+    </div>
+{% endblock content %}
+    

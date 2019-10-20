@@ -1,14 +1,14 @@
 from django.urls import path
+from django.contrib.auth import views as auth_views
 
-from hrm.users.views import (
-    user_redirect_view,
-    user_update_view,
-    user_detail_view,
-)
+
+from hrm.users import views
+
 
 app_name = "users"
+
 urlpatterns = [
-    path("~redirect/", view=user_redirect_view, name="redirect"),
-    path("~update/", view=user_update_view, name="update"),
-    path("<str:username>/", view=user_detail_view, name="detail"),
+    path("sing-in/", auth_views.LoginView.as_view(), name='signin'),
+    path("sing-out/", auth_views.LogoutView.as_view(), name='signout'),
+    path('sign-up/', views.SignUp.as_view(), name='signup'),
 ]

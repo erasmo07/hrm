@@ -269,6 +269,7 @@ tags
 ### Project template
 
 hrm/media/
+hrm/static/vendors/general/
 
 .pytest_cache/
 

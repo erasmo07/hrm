@@ -1,0 +1,29 @@
+{
+  "name": "hrm",
+  "homepage": "https://github.com/erasmo07/hrm",
+  "authors": [
+    "erasmo <erasmomontes07@gmail.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "tether": "^1.4.7",
+    "bootstrap-datepicker": "^1.9.0",
+    "bootstrap-timepicker": "^0.5.2",
+    "jquery": "^3.4.1",
+    "popper.js": "^1.16.0",
+    "bootstrap": "boostrap#^4.3.1",
+    "js-cookie": "^2.2.1",
+    "moment": "^2.24.0",
+    "perfect-scrollbar": "^0.8.1",
+    "stickyjs": "*"
+  }
+}
