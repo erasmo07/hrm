@@ -1,0 +1,4 @@
+
+
+class TypePayrollEnums:
+    biweekly = 'Quincenal'
