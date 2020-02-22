@@ -1,29 +1,25 @@
 from config.routers import router
 from django.conf import settings
-from django.urls import include, path, re_path
+from django.urls import include, path, re_path, reverse_lazy
 from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import views as auth_views
-from django.views.generic import TemplateView
+from django.views.generic.base import RedirectView
+from rest_framework.authtoken.views import ObtainAuthToken
+from django.views.decorators.csrf import csrf_exempt
 
+from graphene_django.views import GraphQLView
 
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    path('users/', include('hrm.users.urls', namespace='users')),
-    path('', login_required(TemplateView.as_view(template_name='index.html')),
-         name='home'),
-    path('forget-password/',
-         auth_views.PasswordResetView.as_view(), name='password_reset'),
-    path('forget-password/done/',
-         auth_views.PasswordResetDoneView.as_view(), name='password_reset_done'),
-    path('forget-password/<str:uidb64>/<str:token>/confirm/',
-         auth_views.PasswordResetConfirmView.as_view(),
-         name='password_reset_confirm'),
-    path('forget-password/complete/',
-         auth_views.PasswordResetCompleteView.as_view(),
-         name='password_reset_complete')
+    path('', RedirectView.as_view(url=reverse_lazy('api-root'),permanent=False)),
+
+    path('api/v1/', include(router.urls)),
+    path('api/v1/auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:

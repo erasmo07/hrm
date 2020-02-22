@@ -1,10 +1,23 @@
 import graphene
-from hrm.users import queries as user_queries
+import graphql_jwt
+from hrm.users import schema as users_schema, mutations as users_mutations
+from hrm.payroll import schema as payroll_schema, mutations as payroll_mutations
 
-class Query(graphene.ObjectType):
-    users = graphene.List(user_queries.UserQuery)
 
-    def resolve_users(self, info):
-        return user_queries.models.User.objects.all()
+class Mutation(
+    users_mutations.UserMutation,
+    payroll_mutations.PayrollMutation,
+    graphene.ObjectType):
+    token_auth = graphql_jwt.ObtainJSONWebToken.Field()
+    verify_token = graphql_jwt.Verify.Field()
+    refresh_token = graphql_jwt.Refresh.Field()
 
-schema = graphene.Schema(query=Query)
+
+class Query(
+        payroll_schema.PayrollAppSchema,
+        users_schema.UserAppSchema,
+        graphene.ObjectType):
+    pass
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)
