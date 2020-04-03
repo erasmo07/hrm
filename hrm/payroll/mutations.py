@@ -22,8 +22,8 @@ class AdditionalInput(graphene.InputObjectType):
 class CreatePayrollConfiguration(graphene.Mutation):
 
     class Arguments:
-        organization = graphene.String(required=True)
-        type_payroll = graphene.String(required=True)
+        organization = graphene.UUID(required=True)
+        type_payroll = graphene.UUID(required=True)
 
         discounts = graphene.List(DiscountInput)
         additionals = graphene.List(AdditionalInput)
@@ -35,25 +35,18 @@ class CreatePayrollConfiguration(graphene.Mutation):
     @login_required
     def mutate(self, info, *args, **kwargs):
         if not info.context.user.organization_set.filter(
-                uuid=kwargs.get('organization')).exists():
+                id=kwargs.get('organization')).exists():
             message = 'No tiene esta organizacion'
             raise PermissionDenied(message=message)
 
-        configuration = models.PayrollConfiguration.objects.filter(
-            organization__uuid=kwargs.get('organization'),
-            type_payroll__uuid=kwargs.get('type_payroll')
+        configuration, create = models.PayrollConfiguration.objects.get_or_create(
+            organization_id=kwargs.get('organization'),
+            type_payroll_id=kwargs.get('type_payroll')
         )
 
-        if configuration.exists():
+        if create:
             return CreatePayrollConfiguration(
-                ok=True, configuration=configuration.first())
-
-        organization = Organization.objects.get(uuid=kwargs.get('organization'))
-        type_payroll = models.TypePayroll.objects.get(uuid=kwargs.get('type_payroll'))
-
-        configuration = models.PayrollConfiguration.objects.create(
-            organization=organization, type_payroll=type_payroll
-        )
+                ok=True, configuration=configuration)
 
         lay_discount = models.LawDiscount.objects.all()
         configuration.law_discounts.add(*lay_discount)
@@ -61,14 +54,14 @@ class CreatePayrollConfiguration(graphene.Mutation):
         if 'discounts' in kwargs:
             discounts = map(
                 lambda x: models.Discount.objects.create(
-                    organization=organization, **x),
+                    organization_id=kwargs.get("organization"), **x),
                 kwargs.get('discounts'))
             configuration.discounts.add(*discounts)
         
         if 'additionals' in kwargs:
             additionals = map(
                 lambda x: models.Additional.objects.create(
-                    organization=organization, **x),
+                    organization=kwargs.get("organization"), **x),
                 kwargs.get('additionals'))
             configuration.additionals.add(*additionals)
 

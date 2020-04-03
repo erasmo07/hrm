@@ -7,14 +7,13 @@ from hrm.users import queries
 class OrganizatonSchema(graphene.ObjectType):
     organizations = graphene.List(queries.OrganizationQuery)
     organization = graphene.Field(
-        queries.OrganizationQuery,
-        user=graphene.Int())
+        queries.OrganizationQuery, user=graphene.UUID())
 
     @login_required
     @permission_required('users.view_organization')
     def resolve_organizations(self, info, *args, **kwargs):
         return queries.models.Organization.objects.filter(
-            user=info.context.user).all()
+            user=info.context.user)
 
     @login_required
     @permission_required('users.view_organization')
@@ -27,7 +26,7 @@ class UserSchema(graphene.ObjectType):
     users = graphene.List(queries.UserQuery)
     user = graphene.Field(
         queries.UserQuery,
-        uuid=graphene.String(),
+        id=graphene.UUID(),
         email=graphene.String())
     
     def resolve_current_user(self, info, *args, **kwargs):

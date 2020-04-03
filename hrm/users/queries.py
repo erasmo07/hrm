@@ -9,10 +9,9 @@ class UserQuery(DjangoObjectType):
         model = models.User
         filter_fields = {
             'email': ['exact'],
-            'uuid': ['exact']}
+            'id': ['exact']}
 
-        exclude = ['password', 'id'] 
-        interfaces = (relay.Node, )
+        exclude = ['password',] 
 
 
 class OrganizationQuery(DjangoObjectType):
@@ -20,4 +19,3 @@ class OrganizationQuery(DjangoObjectType):
         model = models.Organization
         filter_fields = {'user': ['exact']}
         fields = '__all__'
-        interfaces = (relay.Node, )
