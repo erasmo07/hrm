@@ -9,8 +9,7 @@ class TypePayrollQueries(DjangoObjectType):
 
     class Meta:
         model = models.TypePayroll
-        exclude = ['id']
-        interfaces = (graphene.relay.Node, )
+        fields = "__all__"
 
 
 class LawDiscountQueries(DjangoObjectType):
@@ -18,13 +17,11 @@ class LawDiscountQueries(DjangoObjectType):
 
     class Meta:
         model = models.LawDiscount
-        exclude = ['id']
-        interfaces = (graphene.relay.Node, )
+        fields = "__all__"
 
 
 class PayrollConfigurationQueries(DjangoObjectType):
 
     class Meta:
         model = models.PayrollConfiguration
-        exclude = ['id']
-        interfaces = (graphene.relay.Node, )
+        fields = "__all__"

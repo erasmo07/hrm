@@ -2,9 +2,13 @@ from typing import Any, Sequence
 
 from django.contrib.auth.models import Permission
 from django.contrib.auth import get_user_model
-from factory import DjangoModelFactory, Faker, post_generation
+from factory import (
+    DjangoModelFactory, Faker,
+    post_generation, SubFactory,
+    LazyAttribute)
 
 from hrm.users import models
+
 
 
 class UserFactory(DjangoModelFactory):
@@ -16,8 +20,10 @@ class UserFactory(DjangoModelFactory):
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
         self.set_password('@1234567')
-        self.user_permissions.set(Permission.objects.all())
+        self.organization = SubFactory(OrganizationFactory)
+        self.save()
 
+        self.user_permissions.set(Permission.objects.all())
 
     class Meta:
         model = get_user_model()
@@ -26,6 +32,11 @@ class UserFactory(DjangoModelFactory):
 
 class OrganizationFactory(DjangoModelFactory):
     name = Faker('name')
+    principal_email = LazyAttribute(
+        lambda o: '%s@example.org' % o.name.lower())
+
+    user = SubFactory(UserFactory)
 
     class Meta:
         model = models.Organization
+

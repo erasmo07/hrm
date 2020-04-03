@@ -40,19 +40,19 @@ class UserTestCase(GraphQLTestCase):
 
         response = self.query(
             '''
-            query($uuid: String!){
-                user(uuid: $uuid) {
-                    uuid
+            query($id: UUID!){
+                user(id: $id) {
+                    id
                 }
             }
             ''',
             op_name='user',
-            variables={'uuid': str(user.uuid)}
+            variables={'id': str(user.id)}
         )
         self.assertResponseNoErrors(response)
 
         content = json.loads(response.content)
-        self.assertEqual(content['data']['user']['uuid'], str(user.uuid))
+        self.assertEqual(content['data']['user']['id'], str(user.id))
     
     def test_can_create_user_with_same_email(self):
         instance = factories.UserFactory()
@@ -105,7 +105,7 @@ class UserTestCase(GraphQLTestCase):
                         firstName: $first_name,
                         lastName: $last_name,
                         password: $password
-                    ){ ok, user{ uuid }}
+                    ){ ok, user { id }}
             }
             ''',
             op_name='createUser', variables=variables)
@@ -113,13 +113,13 @@ class UserTestCase(GraphQLTestCase):
         self.assertResponseNoErrors(response)
         content = json.loads(response.content)
 
-        uuid = content['data']['createUser']['user']['uuid']
+        id = content['data']['createUser']['user']['id']
         ok = content['data']['createUser']['ok']
 
         self.assertTrue(ok)
-        self.assertTrue(self.model.objects.filter(uuid=uuid).exists())
+        self.assertTrue(self.model.objects.filter(id=id).exists())
 
-        user = models.User.objects.get(uuid=uuid)
+        user = models.User.objects.get(id=id)
         assert user.user_permissions.count() == Permission.objects.count()
 
 
@@ -153,7 +153,7 @@ class OrganizationTestCase(GraphQLTestCase, JSONWebTokenTestCase):
 
         response_organization = self.query(
             '''
-            query{ organizations{ name } }
+            query{ organizations{ name, id } }
             ''',
             op_name='organizations',
             headers={"HTTP_AUTHORIZATION": 'JWT %s' % token}

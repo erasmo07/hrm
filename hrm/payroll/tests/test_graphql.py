@@ -48,11 +48,11 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         # WHEN
         response = self.query(
             """
-            query($organization: String!){
-                payrollConfiguration(organization: $organization){ uuid }
+            query($organization: UUID!){
+                payrollConfiguration(organization: $organization){ id }
             }
             """,
-            variables={'organization': str(organization.uuid)},
+            variables={'organization': str(organization.id)},
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'}
         )
     
@@ -61,9 +61,6 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         
     
     def test_can_query_type_payroll(self):
-        # GIVEN
-        factories.TypePayrollFactory(name='Quincenal')
-
         # WHEN
         response = self.query(
             '''
@@ -117,8 +114,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!
+                $typePayroll: UUID!,
+                $organization: UUID!
             ){
                 createPayrollConfiguration(
                     typePayroll: $typePayroll,
@@ -132,8 +129,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
             variables = {
-                'typePayroll': str(type_payroll.uuid),
-                'organization': str(organization.uuid)
+                'typePayroll': str(type_payroll.id),
+                'organization': str(organization.id)
             }
         )
 
@@ -160,8 +157,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!
+                $typePayroll: UUID!,
+                $organization: UUID!
             ){
                 createPayrollConfiguration(
                     typePayroll: $typePayroll,
@@ -175,15 +172,15 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
             variables = {
-                'typePayroll': str(type_payroll.uuid),
-                'organization': str(organization.uuid)
+                'typePayroll': str(type_payroll.id),
+                'organization': str(organization.id)
             }
         )
 
         self.assertResponseNoErrors(response)
         configuration = models.PayrollConfiguration.objects.filter(
-            organization__uuid=organization.uuid,
-            type_payroll__uuid=type_payroll.uuid
+            organization__id=organization.id,
+            type_payroll__id=type_payroll.id
         )
         self.assertEqual(configuration.count(), 1)
 
@@ -200,8 +197,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!
+                $typePayroll: UUID!,
+                $organization: UUID!
             ){
                 createPayrollConfiguration(
                     typePayroll: $typePayroll,
@@ -215,8 +212,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
             variables = {
-                'typePayroll': str(type_payroll.uuid),
-                'organization': str(organization.uuid)
+                'typePayroll': str(type_payroll.id),
+                'organization': str(organization.id)
             }
         )
         # THEN
@@ -241,8 +238,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!,
+                $typePayroll: UUID!,
+                $organization: UUID!,
                 $discountName: String!,
                 $discountPorcentage: Int!
             ){
@@ -264,8 +261,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
             variables = {
-                'typePayroll': str(type_payroll.uuid),
-                'organization': str(organization.uuid),
+                'typePayroll': str(type_payroll.id),
+                'organization': str(organization.id),
                 'discountName': 'Discount Prueba',
                 'discountPorcentage': 3.12
             }

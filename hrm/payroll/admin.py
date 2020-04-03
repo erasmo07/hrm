@@ -5,3 +5,4 @@ from hrm.payroll import models
 
 admin.site.register(models.TypePayroll)
 admin.site.register(models.LawDiscount)
+admin.site.register(models.PayrollConfiguration)

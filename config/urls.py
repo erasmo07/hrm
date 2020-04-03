@@ -14,12 +14,9 @@ from graphene_django.views import GraphQLView
 
 urlpatterns = [
     path(settings.ADMIN_URL, admin.site.urls),
-    path('', RedirectView.as_view(url=reverse_lazy('api-root'),permanent=False)),
+    path('', RedirectView.as_view(url='graphql/',permanent=False)),
 
-    path('api/v1/', include(router.urls)),
-    path('api/v1/auth/', include('rest_framework.urls', namespace='rest_framework')),
-
-    path("graphql/", csrf_exempt(GraphQLView.as_view(graphiql=True))),
+    path("graphql/",csrf_exempt(GraphQLView.as_view(graphiql=True))),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
