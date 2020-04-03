@@ -61,6 +61,9 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         
     
     def test_can_query_type_payroll(self):
+        # GIVEN
+        type_payroll = factories.TypePayrollFactory(name='Quincenal')
+
         # WHEN
         response = self.query(
             '''
