@@ -44,7 +44,7 @@ class CreatePayrollConfiguration(graphene.Mutation):
             type_payroll_id=kwargs.get('type_payroll')
         )
 
-        if create:
+        if not create:
             return CreatePayrollConfiguration(
                 ok=True, configuration=configuration)
 
@@ -61,7 +61,7 @@ class CreatePayrollConfiguration(graphene.Mutation):
         if 'additionals' in kwargs:
             additionals = map(
                 lambda x: models.Additional.objects.create(
-                    organization=kwargs.get("organization"), **x),
+                    organization_id=kwargs.get("organization"), **x),
                 kwargs.get('additionals'))
             configuration.additionals.add(*additionals)
 

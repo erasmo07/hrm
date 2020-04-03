@@ -4,49 +4,19 @@ from config.schema import schema
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Permission
 from django.forms import model_to_dict
-from graphene_django.utils.testing import GraphQLTestCase
-from graphql_jwt.testcases import JSONWebTokenTestCase
 from rest_framework.authtoken.models import Token
 
+from hrm.contrib.test_base import TestCase
 from hrm.collaborator import models
 from hrm.collaborator.tests import factories
 from hrm.users.tests.factories import OrganizationFactory, UserFactory
 
 
-class CollaboratorTestCase(GraphQLTestCase, JSONWebTokenTestCase):
-    
-    GRAPHQL_SCHEMA = schema
-
-    def setUp(self):
-        self.user = UserFactory()
-        
-        self.organization = OrganizationFactory.create(user=self.user)
-
-    @property
-    def token(self):
-        response_token = self.query(
-            '''
-            mutation($username: String!, $password: String!){
-                tokenAuth(username: $username, password: $password) {
-                    token
-                }
-            }
-            ''',
-            op_name='tokenAuth',
-            variables={
-                'username': self.user.username, 'password': '@1234567'}
-        )
-
-        self.assertResponseNoErrors(response_token)
-        return json.loads(
-            response_token.content
-        )['data']['tokenAuth']['token']
+class CollaboratorTestCase(TestCase):
     
     def test_can_query_collaborators(self):
         # GIVEN
-        factories.CollaboratorFactory.create(
-            organization=self.organization
-        )
+        factories.CollaboratorFactory(organization=self.organization)
     
         # WHEN
         response = self.query(
@@ -133,13 +103,6 @@ class CollaboratorTestCase(GraphQLTestCase, JSONWebTokenTestCase):
 
 class TestLevelQueries(TestCase):
     
-    GRAPHQL_SCHEMA = schema
-
-    def setUp(self):
-        self.user = UserFactory()
-        
-        self.organization = OrganizationFactory.create(user=self.user)
-    
     def test_can_query_levels(self):
         # GIVEN
         factories.LevelFactory.create(
@@ -151,7 +114,7 @@ class TestLevelQueries(TestCase):
             '''
             query($organization: UUID!){
                 levels(organization: $organization){
-                    id, name, lastName
+                    id, name
                 }
             }
             ''',
@@ -164,4 +127,4 @@ class TestLevelQueries(TestCase):
         content = json.loads(response.content)
 
         self.assertEqual(
-            len(content.get('data').get('collaborators')), 1)
+            len(content.get('data').get('levels')), 1)

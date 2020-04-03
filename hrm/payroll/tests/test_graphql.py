@@ -114,8 +114,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!
+                $typePayroll: UUID!,
+                $organization: UUID!
             ){
                 createPayrollConfiguration(
                     typePayroll: $typePayroll,
@@ -157,8 +157,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!
+                $typePayroll: UUID!,
+                $organization: UUID!
             ){
                 createPayrollConfiguration(
                     typePayroll: $typePayroll,
@@ -197,8 +197,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!
+                $typePayroll: UUID!,
+                $organization: UUID!
             ){
                 createPayrollConfiguration(
                     typePayroll: $typePayroll,
@@ -238,8 +238,8 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         response = self.query(
             """
             mutation create(
-                $typePayroll: String!,
-                $organization: String!,
+                $typePayroll: UUID!,
+                $organization: UUID!,
                 $discountName: String!,
                 $discountPorcentage: Int!
             ){

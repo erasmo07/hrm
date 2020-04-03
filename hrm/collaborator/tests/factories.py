@@ -23,6 +23,8 @@ class LevelFactory(DjangoModelFactory):
 
 class OrganizationUnitFactory(DjangoModelFactory):
     name = Faker('name')
+    organization = factory.SubFactory(
+        users_factories.OrganizationFactory)
 
     class Meta:
         model = models.OrganizationUnit
@@ -30,6 +32,8 @@ class OrganizationUnitFactory(DjangoModelFactory):
 
 class PositionFactory(DjangoModelFactory):
     name = Faker('name')
+    salary = 100.00
+
     organization = factory.SubFactory(
         users_factories.OrganizationFactory)
     organization_unit = factory.SubFactory(
@@ -56,6 +60,7 @@ class CollaboratorFactory(DjangoModelFactory):
 
     user = factory.SubFactory(
         users_factories.UserFactory)
+
     organization = factory.SubFactory(
         users_factories.OrganizationFactory)
 
