@@ -6,7 +6,7 @@ from graphql_jwt.exceptions import PermissionDenied
 from hrm.users.models import Organization
 from hrm.users.queries import OrganizationQuery
 
-from . import models, queries
+from . import models, queries, tasks
 
 
 class DiscountInput(graphene.InputObjectType):
@@ -48,22 +48,22 @@ class CreatePayrollConfiguration(graphene.Mutation):
             return CreatePayrollConfiguration(
                 ok=True, configuration=configuration)
 
-        lay_discount = models.LawDiscount.objects.all()
-        configuration.law_discounts.add(*lay_discount)
+        for law_discount in models.LawDiscount.objects.all():
+            models.LawDiscountOrganization.objects.create(
+                law_discount=law_discount,
+                organization_id=kwargs.get('organization'))
 
-        if 'discounts' in kwargs:
-            discounts = map(
-                lambda x: models.Discount.objects.create(
-                    organization_id=kwargs.get("organization"), **x),
-                kwargs.get('discounts'))
-            configuration.discounts.add(*discounts)
+        for discount in kwargs.get('discounts', []):
+            models.Discount.objects.create(
+                organization_id=kwargs.get("organization"),
+                **discount)
+
+        for additional in kwargs.get('additionals', []):
+            models.Additional.objects.create(
+                organization_id=kwargs.get("organization"),
+                **additional)
         
-        if 'additionals' in kwargs:
-            additionals = map(
-                lambda x: models.Additional.objects.create(
-                    organization_id=kwargs.get("organization"), **x),
-                kwargs.get('additionals'))
-            configuration.additionals.add(*additionals)
+        tasks.CreatePayroll().delay(configuration.id)
 
         return CreatePayrollConfiguration(ok=True, configuration=configuration)
 
