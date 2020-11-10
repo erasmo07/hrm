@@ -36,6 +36,7 @@ class CreatePayroll(Task):
     _status_enums = enums.StatusEnums.payroll
     _create_payroll_collaborator = create_payroll_collaborators
     _configuration = None
+    name = 'hrm.payroll.tasks.CreatePayroll'
 
     configuration_id = None
 
@@ -77,3 +78,6 @@ class CreatePayroll(Task):
 
             self._create_payroll_collaborator.delay(payroll.id)
         return True
+
+
+celery_app.tasks.register(CreatePayroll())
