@@ -44,7 +44,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         organization = OrganizationFactory(user=self.user)
         factories.PayrollConfigurationFactory(
             organization=organization, type_payroll=type_payroll)
-    
+
         # WHEN
         response = self.query(
             """
@@ -55,11 +55,10 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             variables={'organization': str(organization.id)},
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'}
         )
-    
+
         # THEN
         self.assertResponseNoErrors(response)
-        
-    
+
     def test_can_query_type_payroll(self):
         # GIVEN
         type_payroll = factories.TypePayrollFactory(name='Quincenal')
@@ -103,7 +102,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         # THEN
         self.assertResponseNoErrors(response_discount)
         content_discount = json.loads(response_discount.content)
-    
+
     def test_user_hasnt_organization(self):
         # GIVEN
         type_payroll = factories.TypePayrollFactory()
@@ -131,7 +130,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             """,
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
-            variables = {
+            variables={
                 'typePayroll': str(type_payroll.id),
                 'organization': str(organization.id)
             }
@@ -144,7 +143,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         self.assertEqual(
             content.get('errors')[0].get('message'),
             'No tiene esta organizacion')
-    
+
     def test_not_duplicate_configuration(self):
         # GIVEN
         type_payroll = factories.TypePayrollFactory()
@@ -174,7 +173,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             """,
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
-            variables = {
+            variables={
                 'typePayroll': str(type_payroll.id),
                 'organization': str(organization.id)
             }
@@ -214,7 +213,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             """,
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
-            variables = {
+            variables={
                 'typePayroll': str(type_payroll.id),
                 'organization': str(organization.id)
             }
@@ -224,9 +223,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         content_discount = json.loads(response.content)
 
         self.assertIsNotNone(organization.payroll_configuration)
-        self.assertEqual(
-            organization.payroll_configuration.law_discounts.count(),
-            2)
+        self.assertEqual(organization.law_discounts.count(), 2)
 
     def test_can_create_configuration_with_discount_and_additionals(self):
         # GIVEN
@@ -263,7 +260,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
             """,
             op_name='createPayrollConfiguration',
             headers={'HTTP_AUTHORIZATION': f'JWT {self.token}'},
-            variables = {
+            variables={
                 'typePayroll': str(type_payroll.id),
                 'organization': str(organization.id),
                 'discountName': 'Discount Prueba',
@@ -275,10 +272,7 @@ class TypePayrollTestCase(GraphQLTestCase, JSONWebTokenTestCase):
         content_discount = json.loads(response.content)
 
         self.assertIsNotNone(organization.payroll_configuration)
-        self.assertEqual(
-            organization.payroll_configuration.law_discounts.count(), 2)
-        
-        self.assertEqual(
-            organization.payroll_configuration.discounts.count(), 1)
-        self.assertEqual(
-            organization.payroll_configuration.additionals.count(), 1)
+        self.assertEqual(organization.law_discounts.count(), 2)
+
+        self.assertEqual(organization.discounts.count(), 1)
+        self.assertEqual(organization.additionals.count(), 1)

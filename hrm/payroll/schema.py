@@ -44,9 +44,38 @@ class PayrollConfigurationSchema(graphene.ObjectType):
             **kwargs).first()
 
 
+class PayrollCollaborator(graphene.ObjectType):
+    payroll_collaborators = graphene.List(
+        queries.PayrollCollaborator,
+        organization=graphene.UUID(required=True),
+        payroll=graphene.UUID(required=False)
+    )
+
+    @login_required
+    def resolve_payroll_collaborators(self, info, *args, **kwargs):
+        kwargs['payroll__configuration__organization'] = kwargs.pop('organization')
+        return models.PayrollCollaborator.objects.filter(
+            **kwargs
+        )
+
+
+class PayrollSchema(graphene.ObjectType):
+    payrolls = graphene.List(
+        queries.PayrollQueries,
+        organization=graphene.UUID(required=True)
+    )
+
+    @login_required
+    def resolve_payrolls(self, info, *args, **kwargs):
+        kwargs['configuration__organization'] = kwargs.pop('organization')
+        return models.Payroll.objects.filter(**kwargs)
+
+
 class PayrollAppSchema(
     LawDiscountSchema,
+    PayrollCollaborator,
     PayrollConfigurationSchema,
+    PayrollSchema,
     TypePayrollSchema,
     graphene.ObjectType):
     pass
